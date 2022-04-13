@@ -1,5 +1,6 @@
 from django.conf import settings
-from django.db import connection, reset_queries
+from django.db import connections, reset_queries
+from django.db.utils import DEFAULT_DB_ALIAS
 
 import sqlparse
 
@@ -24,6 +25,12 @@ class PrintSqlTool:
   '''
   класс главной задачей, которого является принт sql запросов
   '''
+  def __init__(self, db_alias: str = DEFAULT_DB_ALIAS):
+    '''
+    @db_alias - алиас бд в джанго проекте, пример "default" 
+    '''
+    self.connection = connections[db_alias]
+
   @staticmethod
   def _parse_queries_to_readeble_sql(queryies):
     '''
@@ -48,14 +55,14 @@ class PrintSqlTool:
 
   @toggle_debug_mode
   def __exit__(self, *arsg, **kwargs):
-    self._parse_queries_to_readeble_sql(connection.queries)
+    self._parse_queries_to_readeble_sql(self.connection.queries)
 
   def __call__(self, func):
     @toggle_debug_mode
     def call_inner(*args, **kwargs):
       reset_queries()
       func_result = func(*args, **kwargs)
-      self._parse_queries_to_readeble_sql(connection.queries)
+      self._parse_queries_to_readeble_sql(self.connection.queries)
       return func_result
 
     return call_inner
