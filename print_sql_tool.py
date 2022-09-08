@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.conf import settings
 from django.db import connections, reset_queries
 from django.db.utils import DEFAULT_DB_ALIAS
@@ -25,7 +27,7 @@ class PrintSqlTool:
     '''
     класс главной задачей, которого является принт sql запросов
     '''
-    def __init__(self, db_alias: str = DEFAULT_DB_ALIAS):
+    def __init__(self, db_alias=DEFAULT_DB_ALIAS):
         '''
         @db_alias - алиас бд в джанго проекте, пример "default" 
         '''
@@ -36,16 +38,16 @@ class PrintSqlTool:
         '''
         распринтить sql-запроса в человеко-читаемом виде
         '''
-        print()
+        print
         print('НАЧАЛО БЛОКА ----------')
         for query in queryies:
-            print()
+            print
             sql_string = query['sql']
             parsed_string = sqlparse.format(sql_string, reindent=True, keyword_case='upper')
             print(parsed_string)
-            print()
+            print
         print('КОНЕЦ БЛОКА ----------')
-        print()
+        print
 
     @toggle_debug_mode
     def __enter__(self):
