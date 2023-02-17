@@ -3,6 +3,7 @@ from django.db import connections, reset_queries
 from django.db.utils import DEFAULT_DB_ALIAS
 
 import time
+from pathlib import Path
 
 import sqlparse
 
@@ -70,7 +71,9 @@ class PrintSqlTool:
             for q in parsed_quaries:
                 body += q + '\n'
             body += '-- Конец запроса'
-            with open(create_filename(), 'w') as file:
+            current_directory = Path().absolute()
+            filename = create_filename()
+            with open(current_directory / filename, 'w') as file:
                 file.write(body)
 
     @toggle_debug_mode
