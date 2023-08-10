@@ -56,25 +56,22 @@ class PrintSqlTool:
         return result
 
     def _write_or_print_parsed_quaries(self, parsed_quaries: list) -> None:
+        body = ''
+        body += '-- НАЧАЛО БЛОКА\n'
+        for i, query in enumerate(parsed_quaries, start=1):
+            body += f'-- запрос #{i}\n'
+            body += query + '\n\n'
+        body += '-- КОНЕЦ БЛОКА'
+
         if not self._write_to_file:
-            print()
-            print('НАЧАЛО БЛОКА ----------')
-            for q in parsed_quaries:
-                print()
-                print(q)
-                print()
-            print('КОНЕЦ БЛОКА ----------')
-            print()
+            print(body)
+            return
         else:
-            body = ''
-            body += '-- Начало запроса\n'
-            for q in parsed_quaries:
-                body += q + '\n'
-            body += '-- Конец запроса'
             current_directory = Path().absolute()
             filename = create_filename()
             with open(current_directory / filename, 'w') as file:
                 file.write(body)
+            return
 
     @toggle_debug_mode
     def __enter__(self):
